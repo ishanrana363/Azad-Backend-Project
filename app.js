@@ -79,9 +79,9 @@ app.get("/", async (req, res) => {
 // api file import
 
 
-// const routes = require("./src/routes/api")
+const routes = require("./src/routes/api");
 
-// app.use("/api/v1",routes)
+app.use("/api/v1",routes);
 
 // app.use(express.static("client/dist"));
 
