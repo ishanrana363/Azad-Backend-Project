@@ -66,8 +66,6 @@ class authClass {
     };
     userProfile = async (req,res)=>{
         let Email = req.headers.Email;
-        console.log(req.headers);
-        console.log(Email)
         try{
             let filter = {Email:Email};
             let data = await userModel.findOne(filter);
@@ -80,6 +78,31 @@ class authClass {
             return res.status(500).json({
                 status : "fail",
                 msg: "Something went wrong"
+            })
+        }
+    };
+    updateProfile = async (req,res)=>{
+        let Email = req.headers.Email;
+        try {
+            let filter = {Email:Email};
+            let {Name,Phone,Location,Gender,Image} = req.body;
+            let update = {
+                Name,
+                Phone,
+                Location,
+                Gender,
+                Image
+            };
+            let data = await userModel.findOneAndUpdate(filter,update,{new:true});
+            return res.status(200).json({
+                status : "success",
+                msg : "User profile update successfully",
+                data : data
+            })
+        }catch (e) {
+            return res.status(500).json({
+                status : "fail",
+                msg : "Something went wrong"
             })
         }
     };

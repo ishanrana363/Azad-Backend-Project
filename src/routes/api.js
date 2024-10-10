@@ -9,7 +9,8 @@ const {isLogIn} = require("../moddleware/authMiddleware")
 
 router.post("/user-signup", authController.signUp);
 router.post("/user-signin", authController.signIn);
-router.get("/user-profile" , isLogIn, authController.userProfile )
+router.get("/user-profile" , isLogIn, authController.userProfile);
+router.put("/profile-updated", isLogIn, authController.updateProfile);
 
 
 module.exports = router;
