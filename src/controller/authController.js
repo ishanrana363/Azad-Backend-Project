@@ -64,6 +64,25 @@ class authClass {
             })
         }
     };
+    userProfile = async (req,res)=>{
+        let Email = req.headers.Email;
+        console.log(req.headers);
+        console.log(Email)
+        try{
+            let filter = {Email:Email};
+            let data = await userModel.findOne(filter);
+            return res.status(200).json({
+                status : "success",
+                msg : "User profile find successfully",
+                data : data
+            })
+        }catch (e) {
+            return res.status(500).json({
+                status : "fail",
+                msg: "Something went wrong"
+            })
+        }
+    };
 }
 
 const authController = new authClass();
