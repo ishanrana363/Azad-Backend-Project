@@ -58,7 +58,6 @@ class authClass {
                 token: token,
             });
         }catch (e) {
-            console.log(e.toString())
             return res.status(500).json({
                 status : "fail",
                 msg: "Something went wrong"
