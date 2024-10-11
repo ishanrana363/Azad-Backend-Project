@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt");
 class forgetPasswordClass {
      sendEmailUser = async (req, res) => {
         const { Email } = req.body;
-        console.log(Email);
         const otpCode = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
         const emailSubject = "Pranner Shop OTP Code";
         const emailText = `Your OTP code is ${otpCode}`;
