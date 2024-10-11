@@ -92,7 +92,6 @@ class authClass {
             });
         }
     };
-
     userProfile = async (req,res)=>{
         let Email = req.headers.Email;
         try{
@@ -133,6 +132,13 @@ class authClass {
                 status : "fail",
                 msg : "Something went wrong"
             })
+        }
+    };
+    allUser = async (req,res)=>{
+        try{
+
+        }catch (e){
+
         }
     };
 }
