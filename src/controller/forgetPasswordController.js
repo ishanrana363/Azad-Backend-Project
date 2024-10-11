@@ -5,14 +5,14 @@ const bcrypt = require("bcrypt");
 class forgetPasswordClass {
      sendEmailUser = async (req, res) => {
         const { Email } = req.body;
+        console.log(Email);
         const otpCode = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
-        const emailSubject = "Task Tracker OTP Code";
+        const emailSubject = "Pranner Shop OTP Code";
         const emailText = `Your OTP code is ${otpCode}`;
         const filter = { Email };
 
         try {
-            const user = await userModel.findOne(filter);
-
+            const user = await userModel.find({Email : Email});
             if (user) {
                 // Send OTP email
                 await SendEmailUtility(Email, emailText, emailSubject);
