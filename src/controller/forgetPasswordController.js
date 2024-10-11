@@ -34,7 +34,6 @@ class forgetPasswordClass {
                 });
             }
         } catch (error) {
-            console.error(error);
             return res.status(500).json({
                 status: "fail",
                 msg: "Something went wrong"
@@ -69,37 +68,48 @@ class forgetPasswordClass {
          }
      };
 
-     resetPassword = async (req,res)=>{
-        let { Email } = req.body;
-        const password = req.body.Password;
-        const filter = {Email:Email};
-        try{
-            let result = await userModel.findOne(filter);
-            if(result){
-                let statusData = 0;
-                let otpData = 0;
-                const saltRounds = 10;
-                const newPassword = await bcrypt.hash(password, saltRounds);
-                await userModel.findOneAndUpdate({Email: Email},{Password: newPassword});
-                await otpModel.findOneAndUpdate( {Email :Email },  { otp : otpData, status : statusData } );
+    resetPassword = async (req, res) => {
+        const { Password, Email, otp } = req.body;
+
+        const statusUpdate = 0;
+        const otpCode = 0;
+        const saltRounds = 10;
+
+        try {
+            const hashedPassword = bcrypt.hashSync(Password, saltRounds);
+
+            const update = { Password: hashedPassword, Re_type_Password: hashedPassword };
+
+            let otpData = await otpModel.findOne({Email : Email ,otp: otp});
+
+
+            if (otpData){
+
+                await userModel.updateOne({ Email: Email },  update );
+
+                await otpModel.updateOne({ Email : Email }, { $set: { otp: otpCode, status: statusUpdate } });
+
                 return res.status(200).json({
-                    status : "success",
-                    msg : "Password reset successfully"
+                    status: "success",
+                    msg: "Password reset successfully",
                 });
             }else {
                 return res.status(404).json({
-                    status : "fail",
-                    msg : "Password reset fail"
-                });
+                    status: "fail",
+                    msg : "Otp not found"
+                })
             }
-        }catch (e) {
-            return res.status(500).json({
-                status : "fail",
-                msg : "Something went wrong"
-            })
-        }
 
-     };
+
+        } catch (error) {
+            return res.status(500).json({
+                status: "fail",
+                msg: "Error resetting password"
+            });
+        }
+    };
+
+
 
 }
 

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 const bcrypt = require("bcrypt");
+const {getRounds} = bcrypt;
 
 const userSchema = new Schema({
     Name: {
@@ -34,12 +35,10 @@ const userSchema = new Schema({
     Password : {
         type: String,
         required: [true, 'User password required'],
-        set : (v)=> bcrypt.hashSync(v,bcrypt.genSaltSync(10))
     },
     Re_type_Password : {
         type: String,
         required: [true, 'Confirm password required'],
-        set : (v)=> bcrypt.hashSync(v,bcrypt.genSaltSync(10))
     }
 }, {
     timestamps: true,

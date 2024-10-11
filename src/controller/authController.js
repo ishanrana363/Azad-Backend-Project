@@ -1,36 +1,57 @@
 const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const {tokenCreate} = require("../utility/tokenHelper");
-
+const saltRounds = 10;
 class authClass {
     signUp = async (req, res) => {
-        let {Name,Email,Phone,Location,Gender,Image,Password,Re_type_Password} = req.body;
-        let reqBody = req.body;
-        try{
-            let userEmail = await userModel.findOne({Email:Email});
-            if(userEmail){
+        let { Name, Email, Phone, Location, Gender, Image, Password, Re_type_Password } = req.body;
+
+        try {
+            // Check if the user email already exists
+            let userEmail = await userModel.findOne({ Email: Email });
+            if (userEmail) {
                 return res.status(409).send({
-                    status : "fail",
-                    msg : "User email already exists "
-                })
+                    status: "fail",
+                    msg: "User email already exists"
+                });
             }
-            if (Password!==Re_type_Password){
+
+            // Check if the passwords match
+            if (Password !== Re_type_Password) {
                 return res.status(400).send({
-                    status : "fail",
-                    msg : "Password is not match"
-                })
+                    status: "fail",
+                    msg: "Password does not match"
+                });
             }
-            let data = await userModel.create(reqBody);
+
+
+            const hashedPassword = await bcrypt.hash(Password, saltRounds);
+
+            // Create a new user
+            const newUser = new userModel({
+                Name: Name,
+                Email: Email,
+                Phone: Phone,
+                Location: Location,
+                Gender: Gender,
+                Image: Image,
+                Password: hashedPassword, // Store the hashed password
+                Re_type_Password: hashedPassword // Also store the hashed password here (not recommended to store this field)
+            });
+
+            // Save the user to the database
+            await newUser.save();
+
             return res.status(201).json({
-                status : "success",
-                msg : "User signed up successfully",
-                data : data
-            })
-        }catch (e) {
+                status: "success",
+                message: "User created successfully"
+            });
+
+        } catch (e) {
             return res.status(500).json({
-                status : "fail",
-                msg : "Something went wrong"
-            })
+                status: "fail",
+                msg: "Something went wrong"
+            });
         }
     };
     signIn = async (req, res) => {
@@ -46,15 +67,13 @@ class authClass {
                 });
             }
 
+            let matchPassword = await bcrypt.compare(Password, user.Password);
 
-
-            let matchPassword = bcrypt.compareSync(Password,user.Password);
-
-            if(!matchPassword){
-                return res.status(403).json({
-                    status : "fail",
-                    msg : "password not match"
-                });
+            if (!matchPassword) {
+                return res.status(404).send({
+                    status: "fail",
+                    msg: "Invalid password"
+                })
             }
 
             const jwtKey = process.env.JWT_KEY;
@@ -66,7 +85,6 @@ class authClass {
             });
 
         } catch (e) {
-            console.error("Error during sign-in:", e);
 
             return res.status(500).json({
                 status: "fail",
