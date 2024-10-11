@@ -7,14 +7,14 @@ const SendEmailUtility= async (EmailTo, EmailText, EmailSubject) => {
         smtpTransport ({
                 service: "Gmail",
                 auth: {
-                    user: "ishanrana094@gmail.com",
+                    user: "alazadcmt@gmail.com",
                     pass: pass
                 },
             }
         )
     );
     let mailOptions = {
-        from: 'ishanrana094@gmail.com',
+        from: 'alazadcmt@gmail.com',
         to: EmailTo,
         subject: EmailSubject,
         text: EmailText

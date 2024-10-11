@@ -100,7 +100,7 @@ class forgetPasswordClass {
             })
         }
 
-     }
+     };
 
 }
 
