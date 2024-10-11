@@ -35,16 +35,20 @@ class authClass {
         }
     };
     signIn = async (req, res) => {
-        let {Email,Password} = req.body;
+        const Email = req.body.Email;
+        const Password = req.body.Password;
         try {
             let user = await userModel.findOne({Email:Email});
+
             if (!user){
                 return res.status(404).send({
                     status : "fail",
                     msg : "Invalid email"
                 })
             }
-            const matchPassword = bcrypt.compareSync(Password, user.Password);
+
+            const matchPassword = bcrypt.compare(Password, user.Password);
+
             if (!matchPassword) {
                 return res.status(403).json({
                     status: "fail",
@@ -64,6 +68,7 @@ class authClass {
             })
         }
     };
+
     userProfile = async (req,res)=>{
         let Email = req.headers.Email;
         try{

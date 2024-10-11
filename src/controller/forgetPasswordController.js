@@ -43,7 +43,7 @@ class forgetPasswordClass {
     };
 
      verifyOtp = async (req,res)=>{
-         let { Email } = req.body;
+         let  Email  = req.body.Email;
          let status = 0;
          let otpCode = req.body.otp;
          let statusUpdate = 1;
