@@ -27,7 +27,6 @@ class authClass {
                 data : data
             })
         }catch (e) {
-            console.log(e);
             return res.status(500).json({
                 status : "fail",
                 msg : "Something went wrong"
@@ -35,37 +34,44 @@ class authClass {
         }
     };
     signIn = async (req, res) => {
-        const Email = req.body.Email;
-        const Password = req.body.Password;
+        let { Email, Password } = req.body;
+
         try {
-            let user = await userModel.findOne({Email:Email});
+            let user = await userModel.findOne({ Email });
 
-            if (!user){
+            if (!user) {
                 return res.status(404).send({
-                    status : "fail",
-                    msg : "Invalid email"
-                })
-            }
-
-            const matchPassword = bcrypt.compare(Password, user.Password);
-
-            if (!matchPassword) {
-                return res.status(403).json({
                     status: "fail",
-                    msg: "password not match",
+                    msg: "Invalid email"
                 });
             }
-            const jwtKey = process.env.JWT_KEY
-            let token = tokenCreate({user},jwtKey,"10d");
+
+
+
+            let matchPassword = bcrypt.compareSync(Password,user.Password);
+
+            if(!matchPassword){
+                return res.status(403).json({
+                    status : "fail",
+                    msg : "password not match"
+                });
+            }
+
+            const jwtKey = process.env.JWT_KEY;
+            let token = tokenCreate({ user }, jwtKey, "10d");
+
             return res.status(200).json({
                 status: "success",
                 token: token,
             });
-        }catch (e) {
+
+        } catch (e) {
+            console.error("Error during sign-in:", e);
+
             return res.status(500).json({
-                status : "fail",
+                status: "fail",
                 msg: "Something went wrong"
-            })
+            });
         }
     };
 
